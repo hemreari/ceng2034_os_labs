@@ -1,0 +1,9 @@
+[package]
+name = "lab1"
+version = "0.1.0"
+authors = ["H. Emre ARI <hemreari98@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+dirs = "1.0.5"
+chrono = "0.4.6"
