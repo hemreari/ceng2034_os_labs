@@ -4,8 +4,10 @@ extern crate chrono;
 use chrono::prelude::*;
 use chrono::Utc;
 
+use std::env;
 use std::fs;
 use std::fs::File;
+use std::path::Path;
 use std::os::unix::fs::MetadataExt;
 
 
@@ -22,6 +24,10 @@ fn main() {
 		Err(why) => println!("Couldn't create {} : {:?}", os_lab_path, why.kind()),
 		Ok(_) => println!("Folder created: {}", os_lab_path),
 	};
+
+	let root = Path::new(&os_lab_path);
+	assert!(env::set_current_dir(&root).is_ok());
+	println!("Changed working directory to {}", root.display());
 
 	let mut file1_txt_path = os_lab_path.clone();
 	file1_txt_path.push_str("/a.txt");
