@@ -19,16 +19,19 @@ fn main() {
 	os_lab_path.push_str("/os_lab_0");
 
 
+	/* create os_lab_0 folder */
 	//fs::create_dir(fullpath.to_owned() + "/os_lab_0").unwrap();
 	match fs::create_dir(os_lab_path.clone()) {
-		Err(why) => println!("Couldn't create {} : {:?}", os_lab_path, why.kind()),
-		Ok(_) => println!("Folder created: {}", os_lab_path),
+		Err(why) => println!("Couldn't create {} : {:?}\n\n", os_lab_path, why.kind()),
+		Ok(_) => println!("Folder created: {}\n\n", os_lab_path),
 	};
 
+	/* change working directory to os_lab_0 */
 	let root = Path::new(&os_lab_path);
 	assert!(env::set_current_dir(&root).is_ok());
-	println!("Changed working directory to {}", root.display());
+	println!("Changed working directory to {}\n\n", root.display());
 
+	/* assing file names */
 	let mut file1_txt_path = os_lab_path.clone();
 	file1_txt_path.push_str("/a.txt");
 
@@ -40,6 +43,7 @@ fn main() {
 
 	let filepaths: [String; 3] = [file1_txt_path, file2_txt_path, file_py_path];
 
+	/* create files */
 	for file_path in &filepaths {
 		match File::create(file_path) {
 			Err(why) => println!("Couldn't create {} : {:?}", file_path, why.kind()),
@@ -47,6 +51,8 @@ fn main() {
 		};
 	}
 
+	/* get last modified date of files */
+	println!("\n\nLast modified date of files:");
 	for file_path in &filepaths {
 		let meta = fs::metadata(file_path).unwrap();
 		let timestamp = meta.ctime();
@@ -54,8 +60,7 @@ fn main() {
 		let naive_datetime = NaiveDateTime::from_timestamp(timestamp, 0);
 		let datetime: DateTime<Utc> = DateTime::from_utc(naive_datetime, Utc);
 
-		println!("{} last modified date: {}", file_path, datetime);
-
+		println!("{}, last modified date: {}", file_path, datetime);
 		/*
 		let datetime: DateTime<Utc>::from(timestamp);
 		let newdate = datetime.format("%Y-%m-%d %H:%M:%S.%f").to_string();
@@ -73,6 +78,17 @@ fn main() {
 			Ok(meta) => println!("{} last modifed date: {:?}",
 							  file_path, meta.ctime()),
 		};*/
+	}
+
+	/* prints the file that names ends with .txt */
+	println!("\n\nFiles with txt extension:");
+	let paths = fs::read_dir(os_lab_path.clone()).unwrap();
+	for path in paths {
+		let new_path = path.unwrap().path();
+		let extension = new_path.extension().unwrap();
+		if extension == "txt" {
+			println!("{} file", new_path.display());
+		}
 	}
 
 	//println!("file1 {}, file2 {}, filepy {}", file1_txt_path, file2_txt_path, file_py_path);
